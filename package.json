@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Sierra-SDC/products-api#readme",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "pg": "^8.6.0",
     "redis": "^3.1.2",
