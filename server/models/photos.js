@@ -13,11 +13,11 @@ const Photos = sequelize.define('Photos', {
     allowNull: false,
   },
   url: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(300),
     allowNull: false,
   },
   thumbnail_url: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(300),
     allowNull: false,
   },
 });

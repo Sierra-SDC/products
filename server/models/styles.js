@@ -17,8 +17,8 @@ const Styles = sequelize.define('Styles', {
     allowNull: false,
   },
   sale_price: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
+    type: DataTypes.STRING(10),
+    allowNull: false,
   },
   original_price: {
     type: DataTypes.INTEGER,
