@@ -28,7 +28,13 @@ module.exports = {
         .then((results) => res.status(200).json(results))
         .catch((err) => res.json(err));
     } else {
-      Products.findAll()
+      Products.findAll({
+        where: {
+          id: {
+            [Op.between]: [0, 5],
+          },
+        },
+      })
         .then((results) => res.status(200).json(results))
         .catch((err) => res.json(err));
     }

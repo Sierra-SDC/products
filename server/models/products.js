@@ -52,6 +52,6 @@ Features.belongsTo(Products, {
   constraints: true,
 });
 
-Products.sync({ alter: true });
+// Products.sync({ alter: true });
 
 module.exports.Products = Products;
