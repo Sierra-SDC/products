@@ -3,34 +3,45 @@ const { sequelize } = require('../../db/index.js');
 const { Photos } = require('./photos.js');
 const { Skus } = require('./skus.js');
 
-const Styles = sequelize.define('styles', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    unique: true,
-    primaryKey: true,
+const Styles = sequelize.define(
+  'styles',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      unique: true,
+      primaryKey: true,
+    },
+    productId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    sale_price: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+    },
+    original_price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    default_style: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
-  productId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  name: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-  },
-  sale_price: {
-    type: DataTypes.STRING(10),
-    allowNull: false,
-  },
-  original_price: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  default_style: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-});
+  {
+    indexes: [
+      {
+        unique: false,
+        fields: ['productId'],
+      },
+    ],
+  }
+);
 
 Styles.hasMany(Photos, {
   foreignKey: 'styleId',

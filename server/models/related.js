@@ -21,6 +21,12 @@ const Related = sequelize.define(
   },
   {
     freezeTableName: true,
+    indexes: [
+      {
+        unique: false,
+        fields: ['current_product_id'],
+      },
+    ],
   }
 );
 
