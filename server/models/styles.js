@@ -1,7 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../db/index.js');
+const { Photos } = require('./photos.js');
+const { Skus } = require('./skus.js');
 
-const Styles = sequelize.define('Styles', {
+const Styles = sequelize.define('styles', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -30,6 +32,26 @@ const Styles = sequelize.define('Styles', {
   },
 });
 
-Styles.sync({ alter: true });
+Styles.hasMany(Photos, {
+  foreignKey: 'styleId',
+  constraints: false,
+});
+
+Photos.belongsTo(Styles, {
+  foreignKey: 'id',
+  constraints: false,
+});
+
+Styles.hasMany(Skus, {
+  foreignKey: 'styleId',
+  constraints: false,
+});
+
+Skus.belongsTo(Styles, {
+  foreignKey: 'id',
+  constraints: false,
+});
+
+// Styles.sync({ alter: true });
 
 module.exports.Styles = Styles;

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../db/index.js');
 
-const Skus = sequelize.define('Skus', {
+const Skus = sequelize.define('skus', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -22,6 +22,6 @@ const Skus = sequelize.define('Skus', {
   },
 });
 
-Skus.sync({ alter: true });
+// Skus.sync({ alter: true });
 
 module.exports.Skus = Skus;

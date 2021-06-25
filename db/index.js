@@ -23,7 +23,9 @@ const sequelize = new Sequelize(
     host: process.env.PGHOST,
     port: process.env.PGPORT,
     dialect: 'postgres',
-    // logging: (...msg) => console.log(msg),
+    define: {
+      timestamps: false,
+    },
   }
 );
 

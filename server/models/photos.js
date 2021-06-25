@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../db/index.js');
 
-const Photos = sequelize.define('Photos', {
+const Photos = sequelize.define('photos', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -22,6 +22,6 @@ const Photos = sequelize.define('Photos', {
   },
 });
 
-Photos.sync({ alter: true });
+// Photos.sync({ alter: true });
 
 module.exports.Photos = Photos;

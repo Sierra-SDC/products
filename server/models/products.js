@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../db/index.js');
+const { Features } = require('./features.js');
 
-const Products = sequelize.define('Products', {
+const Products = sequelize.define('products', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -30,6 +31,16 @@ const Products = sequelize.define('Products', {
   },
 });
 
-Products.sync({ alter: true });
+Products.hasMany(Features, {
+  foreignKey: 'product_id',
+  constraints: false,
+});
+
+Features.belongsTo(Products, {
+  foreignKey: 'product_id',
+  constraints: false,
+});
+
+// Products.sync({ alter: true });
 
 module.exports.Products = Products;
