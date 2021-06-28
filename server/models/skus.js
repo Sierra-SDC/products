@@ -33,6 +33,6 @@ const Skus = sequelize.define(
   }
 );
 
-// Skus.sync({ alter: true });
+Skus.sync({ alter: true });
 
 module.exports.Skus = Skus;

@@ -3,11 +3,11 @@ const { Pool } = require('pg');
 const { Sequelize } = require('sequelize');
 
 const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT,
+  user: process.env.PGUSER || 'postgres',
+  host: process.env.PGHOST || '0.0.0.0',
+  database: process.env.PGDATABASE || 'postgres',
+  password: process.env.PGPASSWORD || '',
+  port: process.env.PGPORT || '5432',
 });
 
 pool.query('SELECT NOW()', (err, res) => {

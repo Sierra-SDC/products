@@ -63,6 +63,6 @@ Skus.belongsTo(Styles, {
   constraints: false,
 });
 
-// Styles.sync({ alter: true });
+Styles.sync({ alter: true });
 
 module.exports.Styles = Styles;

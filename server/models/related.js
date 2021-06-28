@@ -30,6 +30,6 @@ const Related = sequelize.define(
   }
 );
 
-// Related.sync({ alter: true });
+Related.sync({ alter: true });
 
 module.exports.Related = Related;

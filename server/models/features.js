@@ -33,6 +33,6 @@ const Features = sequelize.define(
   }
 );
 
-// Features.sync({ alter: true });
+Features.sync({ alter: true });
 
 module.exports.Features = Features;

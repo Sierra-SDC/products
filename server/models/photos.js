@@ -33,6 +33,6 @@ const Photos = sequelize.define(
   }
 );
 
-// Photos.sync({ alter: true });
+Photos.sync({ alter: true });
 
 module.exports.Photos = Photos;
