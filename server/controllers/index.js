@@ -41,15 +41,31 @@ module.exports = {
     }
   },
   retrieveProduct: (req, res) => {
-    Products.findOne({
-      where: { id: req.params.product_id },
-      include: [
-        {
-          model: Features,
-          attributes: { exclude: '$product_id$' },
-        },
-      ],
-    })
+    let query = `
+    SELECT
+      products.id,
+      products.name,
+      products.slogan,
+      products.description,
+      products.category,
+      products.default_price,
+    (
+      SELECT jsonb_agg(jsonb_build_object(
+        'feature', features.feature,
+        'value', features.value
+        )) AS features
+      FROM features
+      WHERE products.id = features.product_id
+    )
+    FROM products
+    WHERE products.id = 11002;
+  `;
+    sequelize
+      .query(query, {
+        plain: false,
+        raw: true,
+        type: QueryTypes.SELECT,
+      })
       .then((results) => res.status(200).json(results))
       .catch((err) => res.status(400).json(err));
   },
