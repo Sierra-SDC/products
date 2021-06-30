@@ -8,6 +8,9 @@ const {
   Skus,
 } = require('../models/index.js');
 const { sequelize } = require('../../db/index.js');
+const Redis = require('redis');
+
+const redisClient = Redis.createClient({ url: process.env.SERVERHOST });
 
 module.exports = {
   retrieveProducts: (req, res) => {
