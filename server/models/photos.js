@@ -10,7 +10,7 @@ const Photos = sequelize.define(
       unique: true,
       primaryKey: true,
     },
-    styleId: {
+    style_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -27,7 +27,7 @@ const Photos = sequelize.define(
     indexes: [
       {
         unique: false,
-        fields: ['styleId'],
+        fields: ['style_id'],
       },
     ],
   }
