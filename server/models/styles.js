@@ -44,7 +44,7 @@ const Styles = sequelize.define(
 );
 
 Styles.hasMany(Photos, {
-  foreignKey: 'styleId',
+  foreignKey: 'style_id',
   constraints: false,
 });
 
@@ -54,7 +54,7 @@ Photos.belongsTo(Styles, {
 });
 
 Styles.hasMany(Skus, {
-  foreignKey: 'styleId',
+  foreignKey: 'style_id',
   constraints: false,
 });
 

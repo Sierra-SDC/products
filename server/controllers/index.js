@@ -94,7 +94,7 @@ module.exports = {
       WHERE styles.id = skus.style_id
     )
     FROM styles
-    WHERE styles.product_id = 11009;`;
+    WHERE styles.product_id = ${req.params.product_id};`;
 
     sequelize
       .query(query, {
