@@ -12,7 +12,7 @@ const Styles = sequelize.define(
       unique: true,
       primaryKey: true,
     },
-    productId: {
+    product_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -37,7 +37,7 @@ const Styles = sequelize.define(
     indexes: [
       {
         unique: false,
-        fields: ['productId'],
+        fields: ['product_id'],
       },
     ],
   }

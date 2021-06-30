@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
 const {
   Products,
   Styles,
@@ -7,6 +7,7 @@ const {
   Photos,
   Skus,
 } = require('../models/index.js');
+const { sequelize } = require('../../db/index.js');
 
 module.exports = {
   retrieveProducts: (req, res) => {
@@ -53,64 +54,56 @@ module.exports = {
       .catch((err) => res.status(400).json(err));
   },
   retrieveProductStyles: (req, res) => {
-    Styles.findAll({
-      where: {
-        productId: req.params.product_id,
-      },
-      include: [
-        {
-          model: Photos,
-          raw: true,
-          attributes: {
-            exclude: ['id', 'styleId'],
-          },
-        },
-        {
-          model: Skus,
-          raw: true,
-          attributes: {
-            exclude: ['styleId'],
-          },
-        },
-      ],
-    })
+    let query = `SELECT
+    styles.id AS "style_id",
+    styles.name,
+    styles.original_price,
+    styles.sale_price,
+    styles.default_style AS "default?",
+    (
+      SELECT jsonb_agg(jsonb_build_object(
+        'thumbnail_url', photos.thumbnail_url,
+        'url', photos.url
+        )) AS photos
+      FROM photos
+      WHERE styles.id = photos.style_id
+    ),
+    (
+      SELECT jsonb_agg(jsonb_build_object(
+        'id', skus.id,
+        'quantity', skus.quantity,
+        'size', skus.size
+      )) AS skus
+      FROM skus
+      WHERE styles.id = skus.style_id
+    )
+    FROM styles
+    WHERE styles.product_id = 11009;`;
+
+    sequelize
+      .query(query, {
+        plain: false,
+        raw: true,
+        type: QueryTypes.SELECT,
+      })
       .then((results) => {
         let styles = results.map((style) => {
-          let {
-            id,
-            name,
-            sale_price,
-            original_price,
-            default_style,
-            photos,
-            skus,
-          } = style;
-
-          if (sale_price === 'null') {
-            sale_price = '0';
+          if (style.sale_price === 'null') {
+            style.sale_price = '0';
           }
-          default_style === 0
-            ? (default_style = true)
-            : (default_style = false);
-
+          style['default?'] === 0
+            ? (style['default?'] = true)
+            : (style['default?'] = false);
           let obj = {};
-          for (let i = 0; i < skus.length; i++) {
-            let sku = skus[i];
+          for (let i = 0; i < style['skus'].length; i++) {
+            let sku = style['skus'][i];
             obj[sku['id']] = {
               quantity: sku['quantity'],
               size: sku['size'],
             };
           }
-
-          return {
-            style_id: id,
-            name: name,
-            original_price: original_price,
-            sale_price: sale_price,
-            'default?': default_style,
-            photos,
-            skus: obj,
-          };
+          style['skus'] = obj;
+          return style;
         });
 
         let response = {
@@ -118,9 +111,11 @@ module.exports = {
           results: styles,
         };
 
-        res.status(200).json(response);
+        res.json(response);
       })
-      .catch((err) => res.status(400).json(err));
+      .catch((err) => {
+        res.status(404).json(err);
+      });
   },
   retrieveRelatedProducts: (req, res) => {
     Related.findAll({
