@@ -44,12 +44,12 @@ const Products = sequelize.define(
 
 Products.hasMany(Features, {
   foreignKey: 'product_id',
-  constraints: true,
+  constraints: false,
 });
 
 Features.belongsTo(Products, {
   foreignKey: 'product_id',
-  constraints: true,
+  constraints: false,
 });
 
 Products.sync({ alter: true });
