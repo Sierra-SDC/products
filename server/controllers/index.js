@@ -45,15 +45,13 @@ module.exports = {
     }
   },
   retrieveProduct: (req, res) => {
-    redisClient.get(
-      `product?product_id=${req.params.product_id}`,
-      (err, product) => {
-        if (err) console.log(err);
-        if (product != null) {
-          console.log('cache hit');
-          return res.json(JSON.parse(product));
-        } else {
-          let query = `
+    let productId = req.params.product_id;
+    redisClient.get(`product?product_id=${productId}`, (err, product) => {
+      if (err) console.log(err);
+      if (product != null) {
+        return res.json(JSON.parse(product));
+      } else {
+        let query = `
           SELECT
             products.id,
             products.name,
@@ -70,27 +68,25 @@ module.exports = {
             WHERE products.id = features.product_id
           )
           FROM products
-          WHERE products.id = ${req.params.product_id};
+          WHERE products.id = ${productId};
         `;
-          sequelize
-            .query(query, {
-              plain: false,
-              raw: true,
-              type: QueryTypes.SELECT,
-            })
-            .then((results) => {
-              redisClient.setex(
-                `product?product_id=${req.params.product_id}`,
-                DEFAULT_EXPIRATION,
-                JSON.stringify(results)
-              );
-              console.log('cache missed');
-              res.status(200).json(results);
-            })
-            .catch((err) => res.status(400).json(err));
-        }
+        sequelize
+          .query(query, {
+            plain: false,
+            raw: true,
+            type: QueryTypes.SELECT,
+          })
+          .then((results) => {
+            redisClient.setex(
+              `product?product_id=${productId}`,
+              DEFAULT_EXPIRATION,
+              JSON.stringify(results)
+            );
+            res.status(200).json(results);
+          })
+          .catch((err) => res.status(400).json(err));
       }
-    );
+    });
   },
   retrieveProductStyles: (req, res) => {
     let query = `SELECT
@@ -157,18 +153,34 @@ module.exports = {
       });
   },
   retrieveRelatedProducts: (req, res) => {
-    Related.findAll({
-      where: {
-        current_product_id: req.params.product_id,
-      },
-    })
-      .then((results) => {
-        res.status(200).json(
-          results.map((result) => {
-            return result.related_product_id;
+    let productId = req.params.product_id;
+    redisClient.get(
+      `related?product_id=${productId}`,
+      (err, relatedProducts) => {
+        if (err) console.log(err);
+        if (relatedProducts !== null) {
+          return res.status(200).json(JSON.parse(relatedProducts));
+        } else {
+          Related.findAll({
+            where: {
+              current_product_id: productId,
+            },
           })
-        );
-      })
-      .catch((err) => res.status(400).json(err));
+            .then((results) => {
+              redisClient.setex(
+                `related?product_id=${productId}`,
+                DEFAULT_EXPIRATION,
+                JSON.stringify(results)
+              );
+              res.status(200).json(
+                results.map((result) => {
+                  return result.related_product_id;
+                })
+              );
+            })
+            .catch((err) => res.status(400).json(err));
+        }
+      }
+    );
   },
 };
