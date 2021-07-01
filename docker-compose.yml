@@ -1,15 +1,19 @@
-version: '3.8'
-services:
-  redis:
-    image: redis
-    expose:
-      - 6379
-    ports:
-      - '6379:6379'
+# version: '3.8'
+# services:
+#   redis:
+#     image: redis
+#     expose:
+#       - 6379
+#     ports:
+#       - '6379:6379'
 
-  app:
-    container_name: products-api
-    build: ./
-    restart: always
-    ports:
-      - '80:3000'
+#   app:
+#     container_name: products-api
+#     build: ./
+#     # volumes:
+#     #   - ./:home/ubuntu/app
+#     links:
+#       - 'redis'
+#     restart: always
+#     ports:
+#       - '3000:3000'

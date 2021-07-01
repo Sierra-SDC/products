@@ -8,9 +8,8 @@ const {
   Skus,
 } = require('../models/index.js');
 const { sequelize } = require('../../db/index.js');
-const Redis = require('redis');
+const redisClient = require('../redis.js');
 
-const redisClient = Redis.createClient({ url: process.env.SERVERHOST });
 const DEFAULT_EXPIRATION = 3600;
 
 module.exports = {
