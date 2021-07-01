@@ -15,23 +15,57 @@ const DEFAULT_EXPIRATION = 3600;
 
 module.exports = {
   retrieveProducts: (req, res) => {
-    if (req.query.count) {
-      Products.findAll({
-        limit: req.query.count,
-      })
-        .then((results) => res.status(200).json(results))
-        .catch((err) => res.json(err));
-    } else if (req.query.page) {
-      let end = req.query.page * 5;
-      Products.findAll({
-        where: {
-          id: {
-            [Op.between]: [end - 4, end],
-          },
-        },
-      })
-        .then((results) => res.status(200).json(results))
-        .catch((err) => res.json(err));
+    let queryCount = req.query.count;
+    let pageCount = req.query.page;
+    if (queryCount) {
+      redisClient.get(`allProductsByCount?=${queryCount}`, (err, products) => {
+        if (err) console.log(err);
+        if (products !== null) {
+          console.log('cache hit');
+          return res.status(200).json(JSON.parse(products));
+        } else {
+          Products.findAll({
+            limit: queryCount,
+          })
+            .then((products) => {
+              console.log('cache missed');
+              redisClient.setex(
+                `allProductsByCount?=${queryCount}`,
+                DEFAULT_EXPIRATION,
+                JSON.stringify(products)
+              );
+              res.status(200).json(products);
+            })
+            .catch((err) => res.json(err));
+        }
+      });
+    } else if (pageCount) {
+      let end = pageCount * 5;
+      redisClient.get(`allProductsByPage?=${pageCount}`, (err, products) => {
+        if (err) console.log(err);
+        if (products !== null) {
+          console.log('cache hit');
+          res.status(200).json(JSON.parse(products));
+        } else {
+          Products.findAll({
+            where: {
+              id: {
+                [Op.between]: [end - 4, end],
+              },
+            },
+          })
+            .then((products) => {
+              console.log('cache missed');
+              redisClient.setex(
+                `allProductsByPage?${pageCount}`,
+                DEFAULT_EXPIRATION,
+                JSON.stringify(products)
+              );
+              res.status(200).json(products);
+            })
+            .catch((err) => res.status(404).json(err));
+        }
+      });
     } else {
       Products.findAll({
         where: {
@@ -41,7 +75,7 @@ module.exports = {
         },
       })
         .then((results) => res.status(200).json(results))
-        .catch((err) => res.json(err));
+        .catch((err) => res.status(404).json(err));
     }
   },
   retrieveProduct: (req, res) => {
@@ -93,7 +127,6 @@ module.exports = {
     redisClient.get(`styles?product_id=${productId}`, (err, styles) => {
       if (err) console.log(err);
       if (styles !== null) {
-        console.log('cache hit');
         return res.status(200).json(JSON.parse(styles));
       } else {
         let query = `SELECT
@@ -152,7 +185,6 @@ module.exports = {
               product_id: req.params.product_id,
               results: styles,
             };
-            console.log('cache missed');
             redisClient.setex(
               `styles?product_id=${productId}`,
               DEFAULT_EXPIRATION,
