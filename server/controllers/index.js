@@ -11,6 +11,7 @@ const { sequelize } = require('../../db/index.js');
 const Redis = require('redis');
 
 const redisClient = Redis.createClient({ url: process.env.SERVERHOST });
+const DEFAULT_EXPIRATION = 3600;
 
 module.exports = {
   retrieveProducts: (req, res) => {
@@ -44,33 +45,52 @@ module.exports = {
     }
   },
   retrieveProduct: (req, res) => {
-    let query = `
-    SELECT
-      products.id,
-      products.name,
-      products.slogan,
-      products.description,
-      products.category,
-      products.default_price,
-    (
-      SELECT jsonb_agg(jsonb_build_object(
-        'feature', features.feature,
-        'value', features.value
-        )) AS features
-      FROM features
-      WHERE products.id = features.product_id
-    )
-    FROM products
-    WHERE products.id = 11002;
-  `;
-    sequelize
-      .query(query, {
-        plain: false,
-        raw: true,
-        type: QueryTypes.SELECT,
-      })
-      .then((results) => res.status(200).json(results))
-      .catch((err) => res.status(400).json(err));
+    redisClient.get(
+      `product?product_id=${req.params.product_id}`,
+      (err, product) => {
+        if (err) console.log(err);
+        if (product != null) {
+          console.log('cache hit');
+          return res.json(JSON.parse(product));
+        } else {
+          let query = `
+          SELECT
+            products.id,
+            products.name,
+            products.slogan,
+            products.description,
+            products.category,
+            products.default_price,
+          (
+            SELECT jsonb_agg(jsonb_build_object(
+              'feature', features.feature,
+              'value', features.value
+              )) AS features
+            FROM features
+            WHERE products.id = features.product_id
+          )
+          FROM products
+          WHERE products.id = ${req.params.product_id};
+        `;
+          sequelize
+            .query(query, {
+              plain: false,
+              raw: true,
+              type: QueryTypes.SELECT,
+            })
+            .then((results) => {
+              redisClient.setex(
+                `product?product_id=${req.params.product_id}`,
+                DEFAULT_EXPIRATION,
+                JSON.stringify(results)
+              );
+              console.log('cache missed');
+              res.status(200).json(results);
+            })
+            .catch((err) => res.status(400).json(err));
+        }
+      }
+    );
   },
   retrieveProductStyles: (req, res) => {
     let query = `SELECT
