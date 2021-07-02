@@ -1,12 +1,10 @@
 {
   "name": "sdc-products-api",
-  "version": "1.0.0",
   "description": "Backend Product API",
   "scripts": {
     "test": "jest",
     "start": "node server",
-    "start:dev": "nodemon server",
-    "etl": "node /db/ETL.js"
+    "start:dev": "nodemon server"
   },
   "author": "Warren Wong",
   "license": "ISC",
