@@ -27,20 +27,16 @@ const inserter = async.cargo((tasks, inserterCallback) => {
   }).then(() => inserterCallback());
 }, 1000);
 
-parser.on('readable', function () {
+parser.on('readable', () => {
   while ((line = parser.read())) {
     inserter.push(line);
   }
 });
 
-parser.on('error', function (err) {
-  console.error(err.message);
-});
+parser.on('error', (err) => console.error(err.message));
 
-parser.on('end', function (count) {
-  inserter.drain = function () {
-    doneLoadingCallback();
-  };
+parser.on('end', (count) => {
+  inserter.drain = () => doneLoadingCallback();
 });
 
 input.pipe(parser);

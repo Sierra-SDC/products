@@ -28,7 +28,7 @@ const retrieveProducts = (req, res) => {
       }
     });
   } else if (pageCount) {
-    let end = pageCount * 5;
+    let rangeEnd = pageCount * 5;
     redisClient.get(`allProductsByPage?=${pageCount}`, (err, products) => {
       if (err) console.log(err);
       if (products !== null) {
@@ -37,7 +37,7 @@ const retrieveProducts = (req, res) => {
         Products.findAll({
           where: {
             id: {
-              [Op.between]: [end - 4, end],
+              [Op.between]: [rangeEnd - 4, rangeEnd],
             },
           },
         })
@@ -60,7 +60,7 @@ const retrieveProducts = (req, res) => {
         },
       },
     })
-      .then((results) => res.status(200).json(results))
+      .then((products) => res.status(200).json(products))
       .catch((err) => res.status(404).json(err));
   }
 };

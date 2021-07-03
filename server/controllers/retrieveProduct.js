@@ -36,13 +36,13 @@ const retrieveProduct = (req, res) => {
           raw: true,
           type: QueryTypes.SELECT,
         })
-        .then((results) => {
+        .then((product) => {
           redisClient.setex(
             `product?product_id=${productId}`,
             DEFAULT_EXPIRATION,
-            JSON.stringify(results)
+            JSON.stringify(product)
           );
-          res.status(200).json(results);
+          res.status(200).json(product);
         })
         .catch((err) => res.status(400).json(err));
     }

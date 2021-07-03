@@ -14,4 +14,4 @@ productsRouter.route('/:product_id/styles').get(retrieveProductStyles);
 
 productsRouter.route('/:product_id/related').get(retrieveRelatedProducts);
 
-module.exports.productsRouter = productsRouter;
+module.exports = productsRouter;

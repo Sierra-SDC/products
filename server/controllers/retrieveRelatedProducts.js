@@ -15,17 +15,16 @@ const retrieveRelatedProducts = (req, res) => {
           current_product_id: productId,
         },
       })
-        .then((results) => {
+        .then((products) => {
+          const relatedProducts = products.map((product) => {
+            return product.related_product_id;
+          });
           redisClient.setex(
             `related?product_id=${productId}`,
             DEFAULT_EXPIRATION,
-            JSON.stringify(results)
+            JSON.stringify(relatedProducts)
           );
-          res.status(200).json(
-            results.map((result) => {
-              return result.related_product_id;
-            })
-          );
+          res.status(200).json(relatedProducts);
         })
         .catch((err) => res.status(400).json(err));
     }

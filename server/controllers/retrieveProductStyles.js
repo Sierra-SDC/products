@@ -43,8 +43,8 @@ const retrieveProductStyles = (req, res) => {
           raw: true,
           type: QueryTypes.SELECT,
         })
-        .then((results) => {
-          let styles = results.map((style) => {
+        .then((styles) => {
+          styles = styles.map((style) => {
             if (style.sale_price === 'null') {
               style.sale_price = '0';
             }
