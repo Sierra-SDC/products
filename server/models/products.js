@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../db/index.js');
-const { Features } = require('./features.js');
+const sequelize = require('../../db/index.js');
+const Features = require('./features.js');
 
 const Products = sequelize.define(
   'products',
@@ -54,4 +54,4 @@ Features.belongsTo(Products, {
 
 Products.sync({ alter: true });
 
-module.exports.Products = Products;
+module.exports = Products;

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../db/index.js');
+const sequelize = require('../../db/index.js');
 
 const Photos = sequelize.define(
   'photos',
@@ -35,4 +35,4 @@ const Photos = sequelize.define(
 
 Photos.sync({ alter: true });
 
-module.exports.Photos = Photos;
+module.exports = Photos;

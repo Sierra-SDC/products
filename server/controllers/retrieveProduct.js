@@ -1,5 +1,5 @@
 const { QueryTypes } = require('sequelize');
-const { sequelize } = require('../../db/index.js');
+const sequelize = require('../../db/index.js');
 const redisClient = require('../redis.js');
 
 const DEFAULT_EXPIRATION = 3600;

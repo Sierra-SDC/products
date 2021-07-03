@@ -1,4 +1,4 @@
-const { sequelize } = require('../../db/index.js');
+const sequelize = require('../../db/index.js');
 const redisClient = require('../redis.js');
 const { QueryTypes } = require('sequelize');
 

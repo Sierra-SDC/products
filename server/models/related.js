@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../db/index.js');
+const sequelize = require('../../db/index.js');
 
 const Related = sequelize.define(
   'related',
@@ -32,4 +32,4 @@ const Related = sequelize.define(
 
 Related.sync({ alter: true });
 
-module.exports.Related = Related;
+module.exports = Related;

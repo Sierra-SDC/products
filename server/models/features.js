@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../../db/index.js');
+const sequelize = require('../../db/index.js');
 
 const Features = sequelize.define(
   'features',
@@ -35,4 +35,4 @@ const Features = sequelize.define(
 
 Features.sync({ alter: true });
 
-module.exports.Features = Features;
+module.exports = Features;

@@ -4,8 +4,8 @@ const retrieveProductStyles = require('./retrieveProductStyles.js');
 const retrieveRelatedProducts = require('./retrieveRelatedProducts.js');
 
 module.exports = {
-  retrieveProducts: retrieveProducts,
-  retrieveProduct: retrieveProduct,
-  retrieveProductStyles: retrieveProductStyles,
-  retrieveRelatedProducts: retrieveRelatedProducts,
+  retrieveProducts,
+  retrieveProduct,
+  retrieveProductStyles,
+  retrieveRelatedProducts,
 };
