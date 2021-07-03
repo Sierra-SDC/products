@@ -11,14 +11,12 @@ const retrieveProducts = (req, res) => {
     redisClient.get(`allProductsByCount?=${queryCount}`, (err, products) => {
       if (err) console.log(err);
       if (products !== null) {
-        console.log('cache hit');
         return res.status(200).json(JSON.parse(products));
       } else {
         Products.findAll({
           limit: queryCount,
         })
           .then((products) => {
-            console.log('cache missed');
             redisClient.setex(
               `allProductsByCount?=${queryCount}`,
               DEFAULT_EXPIRATION,
@@ -34,7 +32,6 @@ const retrieveProducts = (req, res) => {
     redisClient.get(`allProductsByPage?=${pageCount}`, (err, products) => {
       if (err) console.log(err);
       if (products !== null) {
-        console.log('cache hit');
         res.status(200).json(JSON.parse(products));
       } else {
         Products.findAll({
@@ -45,7 +42,6 @@ const retrieveProducts = (req, res) => {
           },
         })
           .then((products) => {
-            console.log('cache missed');
             redisClient.setex(
               `allProductsByPage?${pageCount}`,
               DEFAULT_EXPIRATION,
